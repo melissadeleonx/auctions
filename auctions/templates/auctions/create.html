@@ -1,0 +1,99 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{ category_name }} - uniVVV Auction Listings{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="py-5 text-center">
+    </div>
+
+    <div class="row">
+        {% if user.is_authenticated %}
+      <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">Your Current Listings</span>
+          <span class="badge badge-secondary badge-pill">3</span>
+        </h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Listing 1</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">Price</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Listing 2</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">Price</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Listing 3</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">Price</span>
+          </li>
+        </ul>
+
+        <form class="card p-2">
+            <button type="submit" class="btn btn-secondary">View Account Settings</button>
+        </form>
+      </div>
+      {% endif %}
+
+      
+      <div class="col-md-8 order-md-1">
+        <h2 class="text-center">Create Listing</h2>
+        <form action="{% url 'create' %}" method="POST">
+        {% csrf_token %}
+          <div class="row">           
+          </div>
+          <div class="mb-3">
+            <label for="title">Title</label>
+            <div class="input-group">
+              <input type="text" name="title" class="form-control" id="title" placeholder="Title of the Listing." required>
+              <div class="invalid-feedback" style="width: 100%;">
+                Please provide a title for your listing.
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="category">Category</label>
+            <select id="category" name="category" class="form-control">
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description">Description</label>
+            <input type="text" name="description" class="form-control" id="description" placeholder="Add important details about the listing.">
+          </div>
+
+          <div class="mb-3">
+            <label for="special_features">Special Features</label>
+            <input type="text" name="special_features" class="form-control" id="special_features" placeholder="More information">
+          </div>
+
+          <div class="mb-3">
+            <label for="image_url">Image Url</label>
+            <input type="text" name="image_url" class="form-control" id="image_url" placeholder="Provide link to the image url">
+          </div>
+
+          <div class="mb-3">
+            <label for="image_url">Price</label>
+            <input type="number" name="price" class="form-control" id="image_url" placeholder="$">
+          </div>
+
+          <hr class="mb-4">
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Save New Listing</button>
+        </form>
+      </div>
+    </div>
+
+    
+{% endblock %}

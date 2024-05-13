@@ -1,0 +1,58 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Space Marketplace{% endblock %} 
+{% block body %}
+
+{% if request.GET.success_message %}
+<div class="alert alert-success">
+    {{ request.GET.success_message }}
+</div>
+{% endif %}
+
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+        <!-- <div class="col-md-5 p-lg-5 mx-auto my-5">
+          <h1 class="display-4 font-weight-normal">Space Marketplace</h1>
+          <p class="lead font-weight-norm   al">Where You Shop the Stars and Beyond. From wonderful cosmic dwellings to vehicles, items and more!</p>
+          <a class="btn btn-outline-primary" href="#all_listings">Discover Galactic Treasures Now</a>
+        </div>
+        <div class="product-device box-shadow d-none d-md-block"></div>
+        <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
+        <span id="all_listings"></span>
+      </div> -->
+
+      <div class="container">
+  
+        <h2>Active Listings</h2>
+        <form id="category_form" action="{% url 'category_filter' %}" method="POST">
+            {% csrf_token %}    
+            <select id="category" name="category" class="form-control">
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+             <!-- remove the button, add a javascript code that allows the clickable option with url to each categories-->
+            <button class="btn btn-primary mt-2" type="submit">Search</button>
+        </form>
+
+        <div class="row mt-4">
+            {% for listing in listings %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <img class="card-img-top" src="{{ listing.image_url }}" alt="{{ listing.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ listing.title | truncatechars:45 }}</h5>
+                        <p class="card-text">{{ listing.description | truncatechars:100 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-primary">Buy Now</a>
+                                <a href="{% url 'listing' id=listing.id %}" class="btn btn-sm btn-outline-secondary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
