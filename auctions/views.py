@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Max
@@ -11,17 +11,24 @@ from .models import User, Category, Listing, Comment, Bid
 
 
 def index(request):
-    is_active = Listing.objects.filter(is_active=True)
+    category_name = request.GET.get("category")
+    if category_name:
+        listings = Listing.objects.filter(is_active=True, category__name=category_name)
+    else:
+        listings = Listing.objects.filter(is_active=True)
     all_categories = Category.objects.all()
-    return render(request, "auctions/index.html", {"listings": is_active, "categories": all_categories})
+    return render(request, "auctions/index.html", {"listings": listings, "categories": all_categories, "category_name": category_name})
 
-def category_filter(request):
+def category_filter(request, name):
     if request.method == "POST":
-        category_filter = request.POST.get("category")
-        category = Category.objects.get(name=category_filter)
-        active_listings = Listing.objects.filter(is_active=True, category=category)
-        all_categories = Category.objects.all()
-        return render(request, "auctions/index.html ", {"listings": active_listings, "categories": all_categories})
+        try:
+            category = get_object_or_404(Category, name=name)
+            return HttpResponseRedirect(f"{reverse('index')}?category={category.name}")
+        except Category.DoesNotExist:
+            # Handle the case where the category does not exist
+            return HttpResponseRedirect(reverse("index"))
+
+
 
 # Add the title in the url to make the site more user-friendly
 def listing(request, id):
