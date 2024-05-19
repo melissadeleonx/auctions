@@ -64,3 +64,9 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+/* Listing cards hover effect */
+.card-hover:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease; 
+}
