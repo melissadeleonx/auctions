@@ -45,7 +45,7 @@
       {% endif %}
 
       
-      <div class="col-md-8 order-md-1">
+      <div class="col-md-8 order-md-1 text-white">
         <h2 class="text-center">Create Listing</h2>
         <form action="{% url 'create' %}" method="POST">
         {% csrf_token %}
@@ -62,7 +62,7 @@
           </div>
           <div class="mb-3">
             <label for="category">Category</label>
-            <select id="category" name="category" class="form-control">
+            <select id="category" name="category" class="form-control" required>
                 <option value="">Select a category</option>
                 {% for category in categories %}
                 <option value="{{ category.name }}">{{ category.name }}</option>

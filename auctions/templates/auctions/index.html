@@ -6,9 +6,9 @@
 {% block body %}
 
 <!-- Alert Messages if conditions are met -->
-{% if request.GET.success_message %}
-<div class="alert alert-success">
-    {{ request.GET.success_message }}
+{% if message %}
+<div class="alert alert-{{ message_type }}">
+    {{ message }}
 </div>
 {% endif %}
 
@@ -53,8 +53,8 @@
         <div class="col-md-4">
 
             <!-- Linking the entire card -->
-            <a href="{% url 'listing' id=listing.id %}" class="card-link">
-            <div class="card mb-4 box-shadow">
+            <a href="{% url 'listing' listing.id %}?name={{ listing.title }}" class="card-link">
+            <div class="card card-custom mb-4 box-shadow">
                 <img class="card-img-top" src="{{ listing.image_url }}" alt="{{ listing.title }}">
                 <div class="card-body">
                     <!-- char limit for title and descriptions -->

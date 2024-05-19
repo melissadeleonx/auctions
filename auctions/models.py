@@ -32,7 +32,7 @@ class Listing(models.Model):
     is_active = models.BooleanField(default=True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="seller")
     published_date = models.DateTimeField(default=timezone.now, null=True )
-    watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="watchlist")
+    watchlist = models.ManyToManyField(User, blank=True, related_name="watchlist")
 
 
     def __str__(self):  
