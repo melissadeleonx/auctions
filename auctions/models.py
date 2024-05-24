@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-
+from django.core.exceptions import ValidationError
 
 
 class User(AbstractUser):
@@ -19,7 +19,7 @@ class Bid(models.Model):
     bid= models.IntegerField(default=0)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="bidder")
 
-    def __str__(self):  
+    def __str__(self):
         return str(self.bid)
 
 class Listing(models.Model):

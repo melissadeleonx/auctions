@@ -52,6 +52,13 @@ def listing(request, id):
     is_seller = request.user.username == listing_page.seller.username
     is_watchlist = request.user in listing_page.watchlist.all()
 
+    winning_bid = None
+    is_winner = False
+    if not listing_page.is_active:
+        winning_bid = listing_page.price
+        if winning_bid and winning_bid.bidder == request.user:
+            is_winner = True
+
     # Get the name of the listing from the html request
     name = request.GET.get("name")
 
@@ -62,7 +69,10 @@ def listing(request, id):
             "is_watchlist": is_watchlist,
             "all_comments": all_comments,
             "is_seller": is_seller,
-            "name": name,
+            "is_winner": is_winner,
+            "name": name if name else "",
+            "message": request.GET.get("message", ""),
+            "message_type": request.GET.get("message_type", ""),
         }
         return render(request, "auctions/listing.html", context) 
     else:
@@ -72,9 +82,11 @@ def listing(request, id):
             "is_watchlist": is_watchlist,
             "all_comments": all_comments,
             "is_seller": is_seller,
+            "is_winner": is_winner,
             "message": request.GET.get("message", ""),  
             "message_type": request.GET.get("message_type", ""), 
         }
+
         return render(request, "auctions/listing.html", context)
 
 
@@ -174,29 +186,33 @@ def add_bid(request, id):
         else:
             return HttpResponseRedirect(f"{reverse('listing', args=[id])}?message=Failed bid. Please provide a higher amount than the current bid!&message_type=danger")
 
-
 @login_required
 def close_auction(request, id):
-    # When closing the auction, make sure to set the is_active field to false
+    # Fetch the listing by ID
     listing_page = Listing.objects.get(pk=id)
-    listing_page.is_active = False
-    listing_page.save()
-
-    # Check if the current user is the seller of the listing
     is_seller = request.user.username == listing_page.seller.username
 
-    # Pass on other parameters necessary for the listing page
-    is_watchlist = request.user in listing_page.watchlist.all()
-    all_comments = Comment.objects.filter(listing=listing_page)
+    if is_seller:
+        # Mark the listing as inactive
+        listing_page.is_active = False
+        listing_page.save()
 
-    context = {
-    "listing": listing_page, 
-    "is_watchlist": is_watchlist, 
-    "all_comments": all_comments,
-    "is_seller" : is_seller,
-    "is_closed": True
-    }
-    return render(request, "auctions/listing.html", context)
+        # Determine if the user has the listing in their watchlist
+        is_watchlist = request.user in listing_page.watchlist.all()
+        all_comments = Comment.objects.filter(listing=listing_page)
+
+        context = {
+            "listing": listing_page,
+            "is_watchlist": is_watchlist,
+            "all_comments": all_comments,
+            "is_seller": is_seller,
+            "is_closed": True,
+            "message": "The auction has been closed successfully.",
+            "message_type": "success"
+        }
+        return render(request, "auctions/listing.html", context)
+    
+    
 
 # Added login url in the settings.py
 def login_view(request):

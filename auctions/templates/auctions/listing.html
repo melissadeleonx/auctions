@@ -14,24 +14,25 @@
         {{ message }}
     </div>
 {% endif %}
-
+<!-- 
 {% if is_closed %}
     <div class="alert alert-success">
         The auction is closed successfully.
     </div>
-{% endif %}
-
- {% if not listing.is_active and user == listing.price.user %}
-    <div class="alert alert-success">
-      "Congratulations, you won the auction"
-    </div> 
-{% endif %}
+{% endif %} -->
 
 {% if not listing.is_active %}
     <div class="alert alert-warning" role="alert">
         This listing is no longer active!
     </div>
+    {% if is_winner %}
+        <div class="alert alert-success" role="alert">
+            Congratulations! You are the winning bidder!
+        </div>
+    {% endif %}
 {% endif %}
+
+
 
 <div class="container mt-5">
     <div class="row text-white">
